@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KnowYourRisk — Understand Your Legal Exposure</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:         #f4f6f9;
+    --surface:    #ffffff;
+    --surface2:   #eef1f6;
+    --blue:       #2563eb;
+    --blue-light: #dbeafe;
+    --blue-mid:   #93c5fd;
+    --text:       #1a202c;
+    --text2:      #4a5568;
+    --text3:      #9aa3b0;
+    --border:     #e2e8f0;
+    --border2:    #cbd5e0;
+    --danger:     #dc2626;
+    --danger-bg:  #fef2f2;
+    --warn:       #d97706;
+    --warn-bg:    #fffbeb;
+    --success:    #16a34a;
+    --success-bg: #f0fdf4;
+    --radius:     10px;
+    --radius-lg:  16px;
+    --shadow:     0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:  0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 28px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--blue);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .logo-text span { color: var(--blue); }
+
+  /* PROGRESS */
+  .progress-wrap {
+    margin-bottom: 24px;
+  }
+
+  .progress-bar {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+
+  .progress-step {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    transition: background 0.25s;
+  }
+
+  .progress-step.active { background: var(--blue); }
+  .progress-step.done   { background: var(--blue-mid); }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* SCREENS */
+  .screen { display: none; animation: fadeUp 0.25s ease; }
+  .screen.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* BACK BUTTON */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 0;
+    transition: color 0.15s;
+  }
+  .back-btn:hover { color: var(--blue); }
+
+  /* SCREEN HEADING */
+  .screen-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .screen-title {
+    font-family: 'Lora', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+  }
+
+  .screen-desc {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 24px;
+    line-height: 1.55;
+  }
+
+  /* OPTION BUTTONS */
+  .opt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .opt-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 16px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    line-height: 1.3;
+    box-shadow: var(--shadow);
+  }
+
+  .opt-btn:hover {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+  }
+
+  .opt-btn.selected {
+    border-color: var(--blue);
+    background: var(--blue-light);
+    color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+
+  .opt-btn .opt-icon { display: block; font-size: 22px; margin-bottom: 6px; }
+  .opt-btn .opt-name { display: block; font-size: 13px; font-weight: 600; }
+  .opt-btn .opt-sub  { display: block; font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .opt-btn.selected .opt-sub { color: #5b8dee; }
+
+  /* STATE SEARCH */
+  .state-search {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    margin-bottom: 10px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-shadow: var(--shadow);
+  }
+
+  .state-search:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+
+  .state-search::placeholder { color: var(--text3); }
+
+  .state-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    max-height: 256px;
+    overflow-y: auto;
+    padding-right: 2px;
+    margin-bottom: 16px;
+  }
+
+  .state-list::-webkit-scrollbar { width: 4px; }
+  .state-list::-webkit-scrollbar-track { background: var(--surface2); border-radius: 2px; }
+  .state-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .state-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: all 0.13s;
+    text-align: left;
+    box-shadow: var(--shadow);
+  }
+
+  .state-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+  .state-btn.selected {
+    border-color: var(--blue);
+    background: var(--blue-light);
+    color: var(--blue);
+  }
+
+  /* INPUTS */
+  .field-group { margin-bottom: 16px; }
+
+  .field-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 7px;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-shadow: var(--shadow);
+    appearance: none;
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* PRIMARY BUTTON */
+  .cta-btn {
+    display: block;
+    width: 100%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+    margin-top: 4px;
+  }
+
+  .cta-btn:hover {
+    background: #1d4ed8;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+    transform: translateY(-1px);
+  }
+
+  .cta-btn:disabled {
+    background: var(--border2);
+    color: var(--text3);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .ghost-btn {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text2);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 10px;
+  }
+
+  .ghost-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* SPLASH */
+  .splash-hero {
+    text-align: center;
+    padding: 32px 0 8px;
+  }
+
+  .splash-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--blue-light);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    margin: 0 auto 20px;
+  }
+
+  .splash-title {
+    font-family: 'Lora', serif;
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.15;
+  }
+
+  .splash-title span { color: var(--blue); }
+
+  .splash-sub {
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 320px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--shadow);
+  }
+
+  .feature-card .f-icon { font-size: 18px; margin-bottom: 6px; display: block; }
+  .feature-card .f-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .feature-card .f-sub  { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* RESULTS */
+  .result-header {
+    background: var(--blue);
+    border-radius: var(--radius-lg);
+    padding: 24px 22px;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+
+  .result-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 8px;
+  }
+
+  .result-title {
+    font-family: 'Lora', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
+
+  .result-state {
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  .penalty-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .penalty-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .penalty-card.danger { border-color: #fca5a5; background: var(--danger-bg); }
+  .penalty-card.warn   { border-color: #fcd34d; background: var(--warn-bg); }
+  .penalty-card.ok     { border-color: #86efac; background: var(--success-bg); }
+
+  .penalty-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .penalty-card.danger .penalty-label { color: #ef4444; }
+  .penalty-card.warn   .penalty-label { color: #d97706; }
+  .penalty-card.ok     .penalty-label { color: #16a34a; }
+
+  .penalty-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.15;
+  }
+
+  .penalty-card.danger .penalty-value { color: var(--danger); }
+  .penalty-card.warn   .penalty-value { color: var(--warn); }
+  .penalty-card.ok     .penalty-value { color: var(--success); }
+
+  .penalty-note {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 5px;
+  }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .info-card-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .info-row:last-child { border-bottom: none; }
+  .info-row-key { color: var(--text2); flex-shrink: 0; }
+  .info-row-val { text-align: right; font-weight: 500; color: var(--text); }
+
+  .disclaimer {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #78350f;
+    line-height: 1.6;
+  }
+
+  .disclaimer strong { font-weight: 600; }
+
+  @media (max-width: 380px) {
+    .opt-grid, .feature-grid, .state-list, .penalty-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-mark">⚖️</div>
+    <div class="logo-text">Know<span>YourRisk</span></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-bar">
+      <div class="progress-step" id="ps1"></div>
+      <div class="progress-step" id="ps2"></div>
+      <div class="progress-step" id="ps3"></div>
+      <div class="progress-step" id="ps4"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">Step 1 of 4</div>
+  </div>
+
+  <!-- SCREEN 0: SPLASH -->
+  <div class="screen visible" id="screen-splash">
+    <div class="splash-hero">
+      <div class="splash-icon">⚖️</div>
+      <div class="splash-title">Know<span>YourRisk</span></div>
+      <div class="splash-sub">Understand the real legal consequences you could face — by state, charge, and situation.</div>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card"><span class="f-icon">🚗</span><div class="f-name">Speeding</div><div class="f-sub">Fines, points & jail</div></div>
+      <div class="feature-card"><span class="f-icon">🍺</span><div class="f-name">DUI / DWI</div><div class="f-sub">First to felony level</div></div>
+      <div class="feature-card"><span class="f-icon">💊</span><div class="f-name">Drug offenses</div><div class="f-sub">Possession & distribution</div></div>
+      <div class="feature-card"><span class="f-icon">📦</span><div class="f-name">Theft</div><div class="f-sub">Petty to robbery</div></div>
+      <div class="feature-card"><span class="f-icon">🥊</span><div class="f-name">Assault</div><div class="f-sub">Simple to aggravated</div></div>
+      <div class="feature-card"><span class="f-icon">🔫</span><div class="f-name">Weapon offenses</div><div class="f-sub">Carry, brandishing & more</div></div>
+    </div>
+    <button class="cta-btn" onclick="startApp()">Get started — it's free</button>
+    <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:14px;">Covers all 50 states · No sign-up required · Not legal advice</p>
+  </div>
+
+  <!-- SCREEN 1: STATE -->
+  <div class="screen" id="screen-state">
+    <button class="back-btn" onclick="goTo(0)">← Back</button>
+    <div class="screen-tag">Step 1 of 4</div>
+    <div class="screen-title">Which state?</div>
+    <div class="screen-desc">Penalties vary significantly by state. Select yours for the most accurate estimate.</div>
+    <input class="state-search" type="text" placeholder="Search states…" id="stateSearch" oninput="filterStates()" autocomplete="off" />
+    <div class="state-list" id="stateList"></div>
+    <button class="cta-btn" id="stateNext" onclick="goTo(2)" disabled>Continue</button>
+  </div>
+
+  <!-- SCREEN 2: CATEGORY -->
+  <div class="screen" id="screen-category">
+    <button class="back-btn" onclick="goTo(1)">← Back</button>
+    <div class="screen-tag">Step 2 of 4</div>
+    <div class="screen-title">What's the charge?</div>
+    <div class="screen-desc">Select the category that best matches the situation.</div>
+    <div class="opt-grid">
+      <button class="opt-btn" onclick="selectCat('speeding', this)">
+        <span class="opt-icon">🚗</span><span class="opt-name">Speeding</span><span class="opt-sub">Traffic violation</span>
+      </button>
+      <button class="opt-btn" onclick="selectCat('dui', this)">
+        <span class="opt-icon">🍺</span><span class="opt-name">DUI / DWI</span><span class="opt-sub">Impaired driving</span>
+      </button>
+      <button class="opt-btn" onclick="selectCat('drugs', this)">
+        <span class="opt-icon">💊</span><span class="opt-name">Drug offense</span><span class="opt-sub">Possession / distribution</span>
+      </button>
+      <button class="opt-btn" onclick="selectCat('theft', this)">
+        <span class="opt-icon">📦</span><span class="opt-name">Theft</span><span class="opt-sub">Shoplifting / grand theft</span>
+      </button>
+      <button class="opt-btn" onclick="selectCat('assault', this)">
+        <span class="opt-icon">🥊</span><span class="opt-name">Assault</span><span class="opt-sub">Simple / aggravated</span>
+      </button>
+      <button class="opt-btn" onclick="selectCat('weapon', this)">
+        <span class="opt-icon">🔫</span><span class="opt-name">Weapon offense</span><span class="opt-sub">Possession / carry</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: DETAILS -->
+  <div class="screen" id="screen-details">
+    <button class="back-btn" onclick="goTo(2)">← Back</button>
+    <div class="screen-tag">Step 3 of 4</div>
+    <div class="screen-title" id="detailsTitle">Details</div>
+    <div class="screen-desc" id="detailsDesc">Tell us a bit more.</div>
+    <div id="detailsContent"></div>
+    <button class="cta-btn" id="detailsNext" onclick="calcResults()" disabled>See my risk estimate →</button>
+  </div>
+
+  <!-- SCREEN 4: RESULTS -->
+  <div class="screen" id="screen-results">
+    <button class="back-btn" onclick="goTo(0)">← Start over</button>
+    <div id="resultContent"></div>
+    <div class="disclaimer">
+      <strong>This is not legal advice.</strong> Estimates are based on typical statutory ranges and may not reflect your specific circumstances, prior record, or local court practices. Always consult a licensed attorney.
+    </div>
+    <button class="cta-btn" onclick="startApp()">Calculate another scenario</button>
+    <button class="ghost-btn" onclick="location.reload()">← Home</button>
+  </div>
+
+</div>
+
+<script>
+const STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
+
+const PENALTIES = {
+  dui: {
+    first:  { label:"First offense DUI", fine:[500,2000],   jail:[2,180],   license:"90 days–1 year suspension", felony:false, notes:"Mandatory alcohol education, possible ignition interlock device required" },
+    second: { label:"Second offense DUI", fine:[1000,4000],  jail:[30,365],  license:"1–2 year suspension",        felony:false, notes:"Mandatory interlock device; possible vehicle impoundment" },
+    felony: { label:"Felony DUI (3rd+ or injury)", fine:[2000,10000], jail:[365,1825], license:"3+ year revocation", felony:true, notes:"Prison likely; permanent record; possible habitual offender status" }
+  },
+  drugs: {
+    marijuana_possession: { label:"Marijuana possession", fine:[0,1000],     jail:[0,180],   felony:false, notes:"Many states have decriminalized or legalized; outcome varies greatly by state and quantity" },
+    cocaine_possession:   { label:"Cocaine/hard drug possession", fine:[1000,5000], jail:[180,730], felony:true, notes:"Schedule I/II controlled substance; typically a felony charge" },
+    distribution:         { label:"Drug distribution / trafficking", fine:[5000,50000], jail:[730,3650], felony:true, notes:"Federal charges possible; mandatory minimums apply in many jurisdictions" },
+    paraphernalia:        { label:"Drug paraphernalia", fine:[100,500], jail:[0,90], felony:false, notes:"Usually a misdemeanor; often bundled with a possession charge" }
+  },
+  theft: {
+    petty:   { label:"Petty theft / shoplifting", fine:[100,1000],   jail:[0,180],   felony:false, notes:"Typically under $500–$950 in value; misdemeanor in most states" },
+    grand:   { label:"Grand theft", fine:[1000,10000],  jail:[180,1095], felony:true,  notes:"Value threshold varies by state ($500–$2,500); felony with potential prison time" },
+    robbery: { label:"Robbery (force or threat)", fine:[2000,20000], jail:[730,5475], felony:true,  notes:"Serious felony; use of force or intimidation significantly escalates charges" }
+  },
+  assault: {
+    simple:     { label:"Simple assault", fine:[500,2500],   jail:[0,365],   felony:false, notes:"Misdemeanor; no serious injury; may result in restraining order" },
+    domestic:   { label:"Domestic assault", fine:[500,5000],  jail:[30,730],  felony:false, notes:"Mandatory arrest in many states; protective order likely; significant career impact" },
+    aggravated: { label:"Aggravated assault", fine:[1000,15000], jail:[365,1825], felony:true, notes:"Felony; involves a weapon or causes serious bodily injury" }
+  },
+  weapon: {
+    unlawful_carry:   { label:"Unlawful carrying / concealed", fine:[500,5000],   jail:[180,1095], felony:false, notes:"Varies heavily by state — some are permitless carry, others impose strict penalties" },
+    brandishing:      { label:"Brandishing / menacing", fine:[500,2000],   jail:[30,365],   felony:false, notes:"Displaying a weapon to threaten; may upgrade to felony if injury results" },
+    felon_possession: { label:"Felon in possession", fine:[5000,25000], jail:[730,3650],  felony:true,  notes:"Federal charge possible under 18 U.S.C. § 922(g); mandatory minimums apply" }
+  }
+};
+
+const STATE_MODS = {
+  "California":    { mult:1.8, note:"CA has some of the highest base fines in the country" },
+  "New York":      { mult:1.6, note:"NY adds mandatory surcharges on top of base fines" },
+  "Florida":       { mult:1.3, note:"FL fines include mandatory court costs" },
+  "Texas":         { mult:0.9, note:"TX fines trend toward the lower end nationally" },
+  "Nevada":        { mult:1.5, note:"NV has elevated fines, especially in metro areas" },
+  "Illinois":      { mult:1.4, note:"IL mandatory fees significantly increase total costs" },
+  "Massachusetts": { mult:1.5, note:"MA has strict enforcement and elevated surcharges" },
+  "Arizona":       { mult:1.2, note:"AZ mandates jail time even for first DUI offenses" },
+  "Colorado":      { mult:1.1, note:"CO marijuana laws significantly affect drug charge outcomes" },
+  "Oregon":        { mult:1.2, note:"OR marijuana laws are liberal; other fines are moderate" },
+  "Washington":    { mult:1.1, note:"WA marijuana decriminalized; other charges follow national norms" },
+  "Michigan":      { mult:1.1, note:"MI has moderate fines with standard court fee structures" },
+  "Georgia":       { mult:1.2, note:"GA has mandatory minimum sentencing for many offenses" },
+  "Virginia":      { mult:1.3, note:"VA recently reformed marijuana laws; DUI penalties remain strict" },
+};
+
+let app = { selectedState:null, selectedCat:null, selectedSub:null, details:{} };
+
+function startApp() {
+  app = { selectedState:null, selectedCat:null, selectedSub:null, details:{} };
+  renderStateList('');
+  document.getElementById('stateSearch').value = '';
+  document.getElementById('stateNext').disabled = true;
+  goTo(1);
+}
+
+function goTo(n) {
+  const ids = ['splash','state','category','details','results'];
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+  document.getElementById('screen-' + ids[n]).classList.add('visible');
+  const pw = document.getElementById('progressWrap');
+  if (n === 0) { pw.style.display = 'none'; }
+  else {
+    pw.style.display = 'block';
+    updateProgress(n);
+  }
+  if (n === 3) renderDetails();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function updateProgress(step) {
+  const labels = ['','Step 1 of 4 — State','Step 2 of 4 — Charge','Step 3 of 4 — Details','Step 4 of 4 — Your results'];
+  document.getElementById('progressLabel').textContent = labels[step] || '';
+  for (let i=1; i<=4; i++) {
+    const el = document.getElementById('ps'+i);
+    el.className = 'progress-step' + (i < step ? ' done' : i === step ? ' active' : '');
+  }
+}
+
+function renderStateList(q) {
+  const filtered = STATES.filter(s => s.toLowerCase().includes(q.toLowerCase()));
+  document.getElementById('stateList').innerHTML = filtered.map(s =>
+    `<button class="state-btn ${app.selectedState===s?'selected':''}" onclick="selectState('${s}')">${s}</button>`
+  ).join('');
+}
+
+function filterStates() {
+  renderStateList(document.getElementById('stateSearch').value);
+}
+
+function selectState(s) {
+  app.selectedState = s;
+  renderStateList(document.getElementById('stateSearch').value);
+  document.getElementById('stateNext').disabled = false;
+}
+
+function selectCat(cat, btn) {
+  app.selectedCat = cat;
+  app.selectedSub = null;
+  document.querySelectorAll('#screen-category .opt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setTimeout(() => goTo(3), 200);
+}
+
+function renderDetails() {
+  const cat = app.selectedCat;
+  const cfg = {
+    speeding: { title:'Speeding details',      desc:'Enter the zone and speeds so we can calculate your likely fine and points.' },
+    dui:      { title:'DUI / DWI details',     desc:'Which level of DUI offense applies?' },
+    drugs:    { title:'Drug charge details',   desc:'What type of drug charge are you facing?' },
+    theft:    { title:'Theft details',         desc:'What level of theft is involved?' },
+    assault:  { title:'Assault charge details',desc:'What type of assault charge?' },
+    weapon:   { title:'Weapon offense details',desc:'Which type of weapon offense?' }
+  };
+  document.getElementById('detailsTitle').textContent = cfg[cat].title;
+  document.getElementById('detailsDesc').textContent  = cfg[cat].desc;
+  document.getElementById('detailsNext').disabled = true;
+
+  const c = document.getElementById('detailsContent');
+
+  if (cat === 'speeding') {
+    c.innerHTML = `
+      <div class="opt-grid" style="margin-bottom:18px">
+        <button class="opt-btn" onclick="pickZone('standard',this)"><span class="opt-icon">🛣️</span><span class="opt-name">Standard road</span><span class="opt-sub">Normal speed limit</span></button>
+        <button class="opt-btn" onclick="pickZone('school',this)"><span class="opt-icon">🏫</span><span class="opt-name">School zone</span><span class="opt-sub" style="color:#dc2626">2× fine</span></button>
+        <button class="opt-btn" onclick="pickZone('construction',this)"><span class="opt-icon">🚧</span><span class="opt-name">Construction zone</span><span class="opt-sub" style="color:#d97706">1.5× fine</span></button>
+        <button class="opt-btn" onclick="pickZone('highway',this)"><span class="opt-icon">🛤️</span><span class="opt-name">Highway / freeway</span><span class="opt-sub">Standard fine</span></button>
+      </div>
+      <div class="input-row">
+        <div class="field-group"><label class="field-label">Speed limit (mph)</label><input type="number" id="inLimit" min="5" max="90" placeholder="e.g. 35" oninput="checkSpeeding()"></div>
+        <div class="field-group"><label class="field-label">Your speed (mph)</label><input type="number" id="inSpeed" min="5" max="160" placeholder="e.g. 52" oninput="checkSpeeding()"></div>
+      </div>`;
+  } else if (cat === 'dui') {
+    c.innerHTML = buildSubs([
+      { key:'first',  icon:'1️⃣', name:'First offense',          sub:'No prior DUI' },
+      { key:'second', icon:'2️⃣', name:'Second offense',         sub:'One prior DUI', warn:true },
+      { key:'felony', icon:'⚠️', name:'Third+ or caused injury', sub:'Felony level',  danger:true }
+    ]);
+  } else if (cat === 'drugs') {
+    c.innerHTML = buildSubs([
+      { key:'marijuana_possession', icon:'🌿', name:'Marijuana possession',         sub:'Any amount' },
+      { key:'cocaine_possession',   icon:'💊', name:'Cocaine / hard drug',          sub:'Possession only', warn:true },
+      { key:'distribution',         icon:'📦', name:'Distribution / trafficking',   sub:'Intent to sell',  danger:true },
+      { key:'paraphernalia',        icon:'🧪', name:'Paraphernalia',                sub:'Pipes, syringes, etc.' }
+    ]);
+  } else if (cat === 'theft') {
+    c.innerHTML = buildSubs([
+      { key:'petty',   icon:'🛒', name:'Petty theft',   sub:'Under $500–$950 value' },
+      { key:'grand',   icon:'💰', name:'Grand theft',   sub:'Over $500–$1,000',     warn:true },
+      { key:'robbery', icon:'🚨', name:'Robbery',       sub:'Force or threat used', danger:true }
+    ]);
+  } else if (cat === 'assault') {
+    c.innerHTML = buildSubs([
+      { key:'simple',     icon:'👊', name:'Simple assault',     sub:'No weapon, no serious injury' },
+      { key:'domestic',   icon:'🏠', name:'Domestic assault',   sub:'Household member involved',  warn:true },
+      { key:'aggravated', icon:'🔪', name:'Aggravated assault', sub:'Weapon or serious injury',   danger:true }
+    ]);
+  } else if (cat === 'weapon') {
+    c.innerHTML = buildSubs([
+      { key:'unlawful_carry',   icon:'🔫', name:'Unlawful carry',      sub:'No valid permit' },
+      { key:'brandishing',      icon:'⚡', name:'Brandishing',         sub:'Displaying to threaten', warn:true },
+      { key:'felon_possession', icon:'⛔', name:'Felon in possession', sub:'Prior felony conviction', danger:true }
+    ]);
+  }
+}
+
+function buildSubs(opts) {
+  return `<div class="opt-grid">${opts.map(o=>`
+    <button class="opt-btn" onclick="pickSub('${o.key}',this)">
+      <span class="opt-icon">${o.icon}</span>
+      <span class="opt-name">${o.name}</span>
+      <span class="opt-sub" ${o.danger?'style="color:#dc2626"':o.warn?'style="color:#d97706"':''}>${o.sub}</span>
+    </button>`).join('')}</div>`;
+}
+
+function pickZone(zone, btn) {
+  app.details.zone = zone;
+  document.querySelectorAll('#detailsContent .opt-grid .opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  checkSpeeding();
+}
+
+function checkSpeeding() {
+  const sl = parseInt(document.getElementById('inLimit')?.value);
+  const ys = parseInt(document.getElementById('inSpeed')?.value);
+  const ok = app.details.zone && sl > 0 && ys > 0 && ys > sl;
+  document.getElementById('detailsNext').disabled = !ok;
+  if (ok) { app.details.speedLimit = sl; app.details.yourSpeed = ys; }
+}
+
+function pickSub(key, btn) {
+  app.selectedSub = key;
+  document.querySelectorAll('#detailsContent .opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('detailsNext').disabled = false;
+}
+
+function fmtDays(d) {
+  if (d === 0) return 'None';
+  if (d < 30)  return `${d} days`;
+  if (d < 365) return `${Math.round(d/30)} months`;
+  const y = (d/365).toFixed(1).replace('.0','');
+  return `${y} year${y!=='1'?'s':''}`;
+}
+
+function calcResults() {
+  const mod = STATE_MODS[app.selectedState] || { mult:1.0, note:null };
+  let r = {};
+
+  if (app.selectedCat === 'speeding') {
+    const sl = app.details.speedLimit, ys = app.details.yourSpeed, over = ys - sl;
+    const zone = app.details.zone;
+    const base = over<=5?[75,150]:over<=10?[100,250]:over<=15?[150,350]:over<=20?[200,450]:over<=30?[300,600]:[500,1000];
+    const zm = zone==='school'?2.0:zone==='construction'?1.5:1.0;
+    const zl = zone==='school'?'School zone':zone==='construction'?'Construction zone':zone==='highway'?'Highway':'Standard road';
+    const fine = [Math.round(base[0]*zm*mod.mult), Math.round(base[1]*zm*mod.mult)];
+    const jailText = over>40?'Up to 6 months possible':over>30?'Up to 90 days possible':'None';
+    const points = (over<=10?1:over<=20?2:over<=30?3:4) + (zm>1?1:0);
+    r = {
+      title: `${over} mph over the limit`, charge:'Speeding',
+      fine, jailText, felony:false,
+      jailSev: over>30?'warn':'ok', fineSev: fine[1]>500?'warn':'ok',
+      rows:[
+        { k:'Your speed',       v:`${ys} mph in a ${sl} mph zone` },
+        { k:'Zone type',        v:zl + (zm>1?` (${zm}× fine)`:'') },
+        { k:'License points',   v:`~${points} points` },
+        { k:'Other impacts',    v:'Traffic school, insurance rate increase' },
+        ...(mod.note?[{k:`${app.selectedState} note`,v:mod.note}]:[])
+      ]
+    };
+  } else {
+    const sub = PENALTIES[app.selectedCat]?.[app.selectedSub];
+    if (!sub) return;
+    const fine = [Math.round(sub.fine[0]*mod.mult), Math.round(sub.fine[1]*mod.mult)];
+    const jailText = sub.jail[1]===0?'None':sub.jail[0]===0?`Up to ${fmtDays(sub.jail[1])}`:`${fmtDays(sub.jail[0])} to ${fmtDays(sub.jail[1])}`;
+    r = {
+      title: sub.label, charge: app.selectedCat.charAt(0).toUpperCase()+app.selectedCat.slice(1)+' charge',
+      fine, jailText, felony: sub.felony,
+      jailSev: sub.felony?'danger':sub.jail[1]>90?'warn':'ok',
+      fineSev: fine[1]>5000?'danger':fine[1]>1000?'warn':'ok',
+      rows:[
+        { k:'Charge type',   v:sub.label },
+        { k:'Classification',v:sub.felony?'⚠️ Felony':'Misdemeanor' },
+        { k:'License',       v:sub.license||'Not typically affected' },
+        { k:'Other impacts', v:sub.notes },
+        ...(mod.note?[{k:`${app.selectedState} note`,v:mod.note}]:[])
+      ].filter(x=>x.v)
+    };
+  }
+
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-header">
+      <div class="result-tag">${r.charge} · ${app.selectedState}</div>
+      <div class="result-title">${r.title}</div>
+      <div class="result-state">Estimated legal exposure</div>
+    </div>
+    <div class="penalty-grid">
+      <div class="penalty-card ${r.fineSev}">
+        <div class="penalty-label">Potential fine</div>
+        <div class="penalty-value">$${r.fine[0].toLocaleString()}–<br>$${r.fine[1].toLocaleString()}</div>
+        <div class="penalty-note">Plus court costs & fees</div>
+      </div>
+      <div class="penalty-card ${r.jailSev}">
+        <div class="penalty-label">Jail / prison</div>
+        <div class="penalty-value" style="font-size:18px;padding-top:3px">${r.jailText}</div>
+        <div class="penalty-note">${r.felony?'Felony charge':'Misdemeanor'}</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Full breakdown</div>
+      ${r.rows.map(row=>`
+        <div class="info-row">
+          <span class="info-row-key">${row.k}</span>
+          <span class="info-row-val">${row.v}</span>
+        </div>`).join('')}
+    </div>`;
+
+  goTo(4);
+}
+
+renderStateList('');
+</script>
+</body>
+</html>
