@@ -4,7 +4,7 @@
 
 A free, open-source legal consequence calculator. Clean UI, zero dependencies, works on any device.
 
-**[Live Demo →](https://your-username.github.io/knowyourrisk)**
+**[Live Demo →](https://knnthlw.github.io/knowyourrisk/)**
 
 ---
 
@@ -29,7 +29,7 @@ Results include fine range, jail/prison estimate, felony vs. misdemeanor classif
 
 1. Fork this repo
 2. Go to **Settings → Pages → Source → main / root**
-3. Visit `https://your-username.github.io/knowyourrisk`
+3. Visit `https://knnthlw.github.io/knowyourrisk/`
 
 No build step. No npm install. No dependencies.
 
